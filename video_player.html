@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass-Wastes Animation Player</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%);
+            margin: 0;
+            padding: 20px;
+            color: #e0e0e0;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #c0a080;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #8080a0;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        .video-container {
+            background: #1a1a2a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(150, 120, 80, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        video {
+            max-width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #c0a080 0%, #806040 100%);
+            color: #1a1a1a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(192, 160, 128, 0.5);
+        }
+        
+        .info {
+            background: rgba(30, 30, 50, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .info h3 {
+            color: #c0a080;
+            margin-top: 0;
+        }
+        
+        .story {
+            background: rgba(20, 20, 40, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95em;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .story h3 {
+            color: #c0a080;
+            text-align: center;
+        }
+        
+        .download-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(25, 25, 45, 0.6);
+            border-radius: 8px;
+        }
+        
+        a {
+            color: #c0a080;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .progress {
+            margin: 10px 0;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #c0a080, #e0c080, #c0a080);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GLASS-WASTES</h1>
+        <p class="subtitle">Rhea and the Clock-Beast</p>
+        
+        <div class="info">
+            <h3>Video Information</h3>
+            <p><strong>Resolution:</strong> 2048×2048 pixels</p>
+            <p><strong>Duration:</strong> 7.5 seconds</p>
+            <p><strong>FPS:</strong> 8</p>
+            <p><strong>Format:</strong> MP4 (H.264)</p>
+            <p><strong>Size:</strong> ~706 KB</p>
+        </div>
+
+        <div class="video-container">
+            <video id="videoPlayer" controls autoplay loop muted>
+                <source src="data:video/mp4;base64,PLACEHOLDER" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="playVideo()">▶ Play</button>
+            <button onclick="pauseVideo()">⏸ Pause</button>
+            <button onclick="restartVideo()">↻ Restart</button>
+            <button onclick="downloadVideo()">⬇ Download MP4</button>
+        </div>
+
+        <div class="download-section">
+            <h3>📥 Download Options</h3>
+            <p>Right-click and "Save As" on the video above, or use the download button.</p>
+            <p><strong>Direct link:</strong> <code id="videoLink">/workspace/glass_wastes_animation.mp4</code></p>
+        </div>
+
+        <div class="story">
+            <h3>The Story of Rhea and the Clock-Beast</h3>
+            <p>The Glass-Wastes stretched from the copper foot-hills of Kar-Sheer to the northern scar where the sun had died during the Second Conjunction. It was not sand that made up the dunes, but billions of pale green vitrified shards—the leftover slag of an ancient war fought with mirrors and concentrated light.</p>
+            <p>Rhea, sixteen years old with skin cured like dark walnut by the silica wind, steered her dune-skiff, the <em>Bitter Tern</em>, tracking a drift-wake. She hunted clock-beasts—the self-winding automations abandoned when the high cities cracked.</p>
+            <p>The Heavy Reclaimer she found was colossal—an iron beetle eighty feet long, circling a jagged fracture in the Caldera of the Lens. Its mainspring was running away with itself, about to tear the beast apart.</p>
+            <p>Rhea climbed the vibrating iron frame and, with her copper-headed maul, sheared through the jammed safety pin. The trip-lever snapped forward, the balance wheel seized, and the beast stopped three paces from the abyss.</p>
+            <p>She inscribed her mother's seal: <strong>Claimed for the Wells.</strong></p>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('videoPlayer');
+        const progressBar = document.getElementById('progressBar');
+        const videoLink = document.getElementById('videoLink');
+
+        // Update progress bar
+        video.addEventListener('timeupdate', () => {
+            const progress = (video.currentTime / video.duration) * 100;
+            progressBar.style.width = progress + '%';
+        });
+
+        function playVideo() {
+            video.play();
+        }
+
+        function pauseVideo() {
+            video.pause();
+        }
+
+        function restartVideo() {
+            video.currentTime = 0;
+            video.play();
+        }
+
+        function downloadVideo() {
+            // Create a temporary link for download
+            const a = document.createElement('a');
+            a.href = '/workspace/glass_wastes_animation.mp4';
+            a.download = 'glass_wastes_animation.mp4';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Auto-play on page load
+        window.addEventListener('load', () => {
+            video.play().catch(e => console.log('Autoplay prevented:', e));
+        });
+    </script>
+</body>
+</html>
