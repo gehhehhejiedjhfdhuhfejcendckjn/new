@@ -28,6 +28,21 @@ python3 liquidfun_render.py
 
 ---
 
+# 🪜 TOO MUCH TALL — the sequel (NEW)
+
+An even taller comedy cut: spheres sky-dive down a mega-tall slide (rails → pinball pegs → trampoline) into the pool below.
+
+- **File:** `too_much_tall_spheres.mp4`
+- **Resolution:** 608×2560 (ultra-tall 1:4.2)
+- **Duration:** 45 seconds · 30 fps
+- **Size:** ~10.1 MB
+
+**Scenes:** 0:02 Chunky sky-dives · 0:06 STEP 1: JUMP · 0:14 HEAVY CARGO · 0:18 Bobby regrets it · 0:22 EVERYBODY JUMPS!! · 0:27 SUPERBALL!! · 0:30 GEYSER O'CLOCK · 0:34 SPLASHDOWN · 0:38 trampoline group hug + confetti.
+
+Regenerate: `python3 too_tall_slide_render.py` (same dependencies as above).
+
+---
+
 ## 📹 Video
 
 - **File:** `glass_wastes_animation.mp4`
@@ -88,8 +103,10 @@ You can open this in a browser to play the video with controls.
 - `glass_wastes_animation.mp4` - The main video file
 - `glass_wastes_ultra_simple.py` - Python source code to generate the animation
 - `liquidfun_spheres_45s.mp4` - Funny Spheres vertical animation (45 s)
+- `too_much_tall_spheres.mp4` - TOO MUCH TALL ultra-tall sequel (45 s)
 - `liquidfun_render.py` - Physics + renderer for the Funny Spheres animation
-- `liquidfun_player.html` - HTML player for the Funny Spheres video
+- `too_tall_slide_render.py` - Physics + renderer for the TOO MUCH TALL sequel
+- `liquidfun_player.html` - HTML player for both Funny Spheres videos
 - `video_player.html` - HTML player for the video
 - `README.md` - This file
 
