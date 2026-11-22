@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banana Slip — Funny 2D Animation</title>
+<style>
+  body { margin:0; background:#1b2430; color:#e8eef5; font-family:system-ui,sans-serif; display:flex; flex-direction:column; align-items:center; gap:14px; padding:24px; }
+  h1 { margin:0; font-size:1.3rem; font-weight:600; }
+  canvas { border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,.5); background:#87ceeb; }
+  .bar { display:flex; gap:10px; align-items:center; }
+  button { background:#ff7a96; color:#3a0d1a; border:0; padding:10px 22px; font-size:1rem; font-weight:700; border-radius:999px; cursor:pointer; }
+  button:hover { filter:brightness(1.08); }
+  button:disabled { opacity:.5; cursor:wait; }
+  #status { font-size:.9rem; opacity:.8; min-width:220px; text-align:center; }
+</style>
+</head>
+<body>
+<h1>🍌 Banana Slip — canvas animation with MP4 export</h1>
+<canvas id="stage" width="854" height="480"></canvas>
+<div class="bar">
+  <button id="replay">▶ Replay</button>
+  <button id="export">⏺ Export MP4</button>
+  <span id="status">Ready</span>
+</div>
+<script>
+"use strict";
+const W = 854, H = 480, FPS = 30, DUR = 6.0, N = Math.round(FPS * DUR);
+const GROUND = H - 90, SKY = "#87ceeb", GRASS = "#6abe5a";
+const cv = document.getElementById("stage"), ctx = cv.getContext("2d");
+
+const ease = t => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+
+function drawCloud(x, y, s) {
+  ctx.fillStyle = "#fff";
+  for (const [dx, dy, r] of [[-40,10,26],[0,0,34],[42,12,24],[18,-14,22]]) {
+    ctx.beginPath();
+    ctx.arc(x + dx*s, y + dy*s, r*s, 0, 7);
+    ctx.fill();
+  }
+}
+function drawBanana(x, y, spin = 0) {
+  const pts = [];
+  for (let i = 0; i < 13; i++) {
+    const a = Math.PI * 0.25 + Math.PI * 0.5 * (i / 12), r = 34;
+    pts.push([x - r*0.5 + r * Math.cos(a - Math.PI/4) * 1.2, y + 8 - r * Math.sin(a - Math.PI/4) * 0.9]);
+  }
+  if (spin) {
+    const cx = pts.reduce((s,p)=>s+p[0],0)/pts.length, cy = pts.reduce((s,p)=>s+p[1],0)/pts.length;
+    const ca = Math.cos(spin), sa = Math.sin(spin);
+    for (const p of pts) { const px=p[0]-cx, py=p[1]-cy; p[0]=px*ca-py*sa+cx; p[1]=px*sa+py*ca+cy; }
+  }
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.strokeStyle = "#f0c828"; ctx.lineWidth = 13; path(pts); ctx.stroke();
+  ctx.strokeStyle = "#ffe65a"; ctx.lineWidth = 6;  path(pts); ctx.stroke();
+}
+function path(p) { ctx.beginPath(); ctx.moveTo(p[0][0], p[0][1]); for (let i = 1; i < p.length; i++) ctx.lineTo(p[i][0], p[i][1]); }
+function drawStar(cx, cy, r, rot) {
+  ctx.fillStyle = "#ffdc3c"; ctx.strokeStyle = "#c8960a"; ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const a = rot + Math.PI * i / 5 - Math.PI / 2, rr = i % 2 ? r * 0.45 : r;
+    ctx.lineTo(cx + rr*Math.cos(a), cy + rr*Math.sin(a));
+  }
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+}
+function bigText(txt, x, y, size, color) {
+  ctx.font = "bold " + size + "px system-ui, Arial";
+  ctx.fillStyle = color; ctx.textAlign = "center";
+  ctx.fillText(txt, x, y); ctx.textAlign = "left";
+}
+
+function blob(x, y, squash, rot, blink, wide, mouth, legphase, legsOut) {
+  ctx.save();
+  ctx.translate(x, y);
+  if (rot) ctx.rotate(rot);
+  const RX = 52*squash, RY = 60/squash;
+  ctx.fillStyle = "#ff7896"; ctx.strokeStyle = "#962846"; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.ellipse(0, 0, RX, RY, 0, 0, 7); ctx.fill(); ctx.stroke();
+  const eh = blink ? 2 : (wide ? 15 : 12), ew = wide ? 11 : 8;
+  ctx.fillStyle = "#1e1e1e";
+  for (const sx of [-24, 24]) { ctx.beginPath(); ctx.ellipse(sx, -8, ew, eh, 0, 0, 7); ctx.fill(); }
+  ctx.strokeStyle = "#781e32"; ctx.lineWidth = 5; ctx.lineCap = "round";
+  if (mouth === "oof") {
+    ctx.fillStyle = "#5a1428"; ctx.beginPath(); ctx.ellipse(0, 33, 16, 13, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = "#ffbe5a"; ctx.beginPath(); ctx.ellipse(0, 27, 16, 7, 0, 0, 7); ctx.fill();
+  } else if (mouth === "oh") {
+    ctx.fillStyle = "#5a1428"; ctx.beginPath(); ctx.ellipse(0, 32, 10, 8, 0, 0, 7); ctx.fill();
+  } else { ctx.beginPath(); ctx.arc(0, 4, 20, Math.PI*0.08, Math.PI*0.92); ctx.stroke(); }
+  ctx.strokeStyle = "#962846"; ctx.lineWidth = 9;
+  if (legsOut) {
+    line(-20, RY-6, -70, RY+34); line(20, RY-6, 70, RY+30);
+    ctx.fillStyle = "#ff7896"; ctx.strokeStyle = "#962846"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.ellipse(-70, RY+38, 13, 8, 0, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(70, RY+34, 13, 8, 0, 0, 7); ctx.fill(); ctx.stroke();
+  } else {
+    for (const [sx, off] of [[-20,0],[20,Math.PI]]) {
+      const ang = Math.sin(legphase + off) * 0.6;
+      const fx = sx + Math.sin(ang)*26, fy = RY + 22;
+      line(sx, RY-10, fx, fy);
+      ctx.fillStyle = "#ff7896"; ctx.strokeStyle = "#962846"; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.ellipse(fx, fy+2, 12, 7, 0, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "#962846"; ctx.lineWidth = 9;
+    }
+  }
+  ctx.restore();
+}
+function line(x1, y1, x2, y2) { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+
+function drawScene(t) {
+  ctx.fillStyle = SKY; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = GRASS; ctx.fillRect(0, GROUND, W, 90);
+  ctx.fillStyle = "#ffeb78"; ctx.beginPath(); ctx.arc(W-95, 75, 35, 0, 7); ctx.fill();
+  drawCloud(140 + t*8, 80, 1); drawCloud(520 + t*5, 130, 0.7);
+  const peelX = 600, peelY = GROUND;
+  const WALK = 2.4;
+  if (t < WALK) {
+    const p = t / WALK;
+    const x = lerp(120, 590, ease(Math.min(1, p/0.95)));
+    const y = GROUND - 60 - Math.abs(Math.sin(t*7))*8;
+    const scared = t > 1.9;
+    blob(x, y, 1, 0, (t*2)%1 < 0.09, scared, scared ? "oh" : "smile", t*14, false);
+    drawBanana(peelX, peelY-2);
+    if (scared) bigText("!", x+70, y-90, 42, "#ff3c3c");
+  } else if (t < WALK + 0.7) {
+    const p = (t - WALK) / 0.7;
+    const y = GROUND - 60 - 150*Math.sin(p*Math.PI*0.8);
+    const x = 600 - 40*Math.sin(p*Math.PI);
+    blob(x, y, 1.1, lerp(0, Math.PI*0.25, Math.sin(p*Math.PI)), false, true, "oof", 0, true);
+    bigText("WHOA!", x+60, y-40, 42, "#ff3c3c");
+    drawBanana(peelX, peelY-2+40*p, p*6);
+  } else {
+    const k = t - WALK - 0.7;
+    const land = 1 + 0.25*Math.exp(-6*k)*Math.abs(Math.sin(k*14));
+    const y = GROUND - 46*land + 30;
+    blob(560, y, 1.9, 0, true, false, "oof", 0, false);
+    const cy = y - 78;
+    for (let s = 0; s < 3; s++) {
+      const a = t*4 + s*2*Math.PI/3;
+      drawStar(560 + 40*Math.cos(a), cy + 14*Math.sin(a) - 6, 12, a);
+    }
+    bigText("OOF!", 560, y-160, 42, "#c81e1e");
+    const q = Math.min(1, k*3);
+    drawBanana(peelX, peelY-2+40*q, q*6);
+    if (t > 4.6) bigText("LOL", W/2, 100, 64, "#ffffff");
+  }
+}
+
+let t0 = null;
+function loop(ts) {
+  if (t0 === null) t0 = ts;
+  const t = ((ts - t0) / 1000) % DUR;
+  drawScene(t);
+  requestAnimationFrame(loop);
+}
+
+const status = document.getElementById("status");
+document.getElementById("replay").onclick = () => { t0 = null; status.textContent = "Ready"; };
+
+document.getElementById("export").onclick = async function () {
+  this.disabled = true;
+  status.textContent = "Recording…";
+  const stream = cv.captureStream(FPS);
+  const mp4Ok = MediaRecorder.isTypeSupported("video/mp4;codecs=avc1.42E01E")
+             || MediaRecorder.isTypeSupported("video/mp4");
+  const mime = mp4Ok ? "video/mp4" : "video/webm;codecs=vp9";
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 4_000_000 });
+  const chunks = [];
+  rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  rec.onstop = () => {
+    const ext = mp4Ok ? "mp4" : "webm";
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(chunks, { type: mime }));
+    a.download = "banana_slip." + ext;
+    a.click();
+    status.textContent = mp4Ok ? "Saved banana_slip.mp4 ✓" : "MP4 unsupported here — saved WebM ✓";
+    this.disabled = false;
+  };
+  t0 = null;
+  rec.start();
+  const start = performance.now();
+  (function tick() {
+    const t = (performance.now() - start) / 1000;
+    drawScene(t);
+    if (t < DUR) requestAnimationFrame(tick);
+    else rec.stop();
+  })();
+};
+
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
