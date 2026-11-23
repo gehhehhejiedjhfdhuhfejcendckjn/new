@@ -2,6 +2,47 @@
 
 A 2048×2048 MP4 animation created entirely with Python code, based on the story of Rhea tracking a clock-beast (Heavy Reclaimer) in the Glass-Wastes.
 
+---
+
+# 🫧 Funny Spheres — LiquidFun-Style Animation (NEW)
+
+A **45-second, vertical 9:16 (720×1280)** MP4 of googly-eyed spheres playing in a physics-simulated liquid pool — splashes, geysers, a wrecking ball, a superball and a confetti finale.
+
+- **File:** `liquidfun_spheres_45s.mp4`
+- **Resolution:** 720×1280 (vertical 9:16)
+- **Duration:** 45 seconds
+- **FPS:** 30 (simulated at 120 Hz)
+- **Format:** MP4 (H.264 + AAC stereo soundtrack)
+- **Size:** ~12.1 MB
+
+**Scenes:** 0:01 Chunky cannonballs in · 0:04 Lemon & Pistachio bounce · 0:08 Chubby Rain · 0:14 Bruiser the wrecking ball · 0:19 Bobby the floater · 0:25 Geyser O'Clock · 0:31 Superball Zoom · 0:37 Group Hug + confetti + THE END.
+
+**How it's made:** a LiquidFun-style particle fluid (700 particles, damped spring solver at 120 Hz with surface tension and buoyancy), a cast of shaded vector spheres with blink/squash/googly-eye animation, and a soundtrack synthesized from the physics collision events (boings, splashes, geysers). Regenerate:
+
+```bash
+pip install numpy pillow imageio-ffmpeg matplotlib
+python3 liquidfun_render.py
+```
+
+**Player:** open `liquidfun_player.html` in a browser to watch it with playback controls.
+
+---
+
+# 🪜 TOO MUCH TALL — the sequel (NEW)
+
+The slide-tower sequel in the same 9:16 format: spheres sky-dive down a mega slide (rails → pinball pegs → trampoline) into the pool below.
+
+- **File:** `too_much_tall_spheres.mp4`
+- **Resolution:** 720×1280 (vertical 9:16)
+- **Duration:** 45 seconds · 30 fps
+- **Size:** ~11.1 MB
+
+**Scenes:** 0:02 Chunky sky-dives · 0:06 STEP 1: JUMP · 0:14 HEAVY CARGO · 0:18 Bobby regrets it · 0:22 EVERYBODY JUMPS!! · 0:27 SUPERBALL!! · 0:30 GEYSER O'CLOCK · 0:34 SPLASHDOWN · 0:38 trampoline group hug + confetti.
+
+Regenerate: `python3 too_tall_slide_render.py` (same dependencies as above).
+
+---
+
 ## 📹 Video
 
 - **File:** `glass_wastes_animation.mp4`
@@ -61,6 +102,11 @@ You can open this in a browser to play the video with controls.
 
 - `glass_wastes_animation.mp4` - The main video file
 - `glass_wastes_ultra_simple.py` - Python source code to generate the animation
+- `liquidfun_spheres_45s.mp4` - Funny Spheres vertical animation (45 s)
+- `too_much_tall_spheres.mp4` - TOO MUCH TALL ultra-tall sequel (45 s)
+- `liquidfun_render.py` - Physics + renderer for the Funny Spheres animation
+- `too_tall_slide_render.py` - Physics + renderer for the TOO MUCH TALL sequel
+- `liquidfun_player.html` - HTML player for both Funny Spheres videos
 - `video_player.html` - HTML player for the video
 - `README.md` - This file
 
