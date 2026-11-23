@@ -22,8 +22,8 @@ FONT_PATH = os.path.join(os.path.dirname(matplotlib.__file__),
 # ----------------------------------------------------------------------------
 # Config
 # ----------------------------------------------------------------------------
-W, H = 720, 1600
-FLOOR = 1450.0
+W, H = 720, 1280
+FLOOR = 1150.0
 WALL_L, WALL_R = 40.0, 680.0
 FPS_SIM, FPS_OUT, DUR = 120, 30, 45.0
 STEPS_PER_FRAME = FPS_SIM // FPS_OUT
@@ -31,7 +31,7 @@ N_FRAMES = int(DUR * FPS_OUT)
 G = 2300.0
 
 # fluid
-N_COLS, N_ROWS = 58, 12
+N_COLS, N_ROWS = 58, 13
 N = N_COLS * N_ROWS
 R0 = 11.0
 CUT = 20.0
@@ -68,8 +68,8 @@ def build_bg():
 
     # side walls (vector style bars)
     for x0 in (int(WALL_L) - 7, int(WALL_R) + 1):
-        bg[940:int(FLOOR), x0:x0 + 6] = np.array([84.0, 104.0, 158.0])
-        bg[940:int(FLOOR), x0 + 6:x0 + 8] = np.array([50.0, 62.0, 104.0])
+        bg[830:int(FLOOR), x0:x0 + 6] = np.array([84.0, 104.0, 158.0])
+        bg[830:int(FLOOR), x0 + 6:x0 + 8] = np.array([50.0, 62.0, 104.0])
     # floor slab
     bg[int(FLOOR):, :] = np.array([26.0, 33.0, 64.0])
     bg[int(FLOOR) - 4:int(FLOOR), int(WALL_L):int(WALL_R)] = np.array([110.0, 130.0, 190.0])
@@ -91,7 +91,7 @@ def build_water_tint():
     shallow = np.array([64.0, 190.0, 255.0])
     deep = np.array([14.0, 70.0, 185.0])
     for y in range(H):
-        f = np.clip((y - 1150.0) / 450.0, 0.0, 1.0)
+        f = np.clip((y - 950.0) / 320.0, 0.0, 1.0)
         t[y] = shallow + (deep - shallow) * f
     return t
 
@@ -266,6 +266,8 @@ def fluid_s():
 
 def balls_step(t):
     group = t >= 37.0
+    calm = t > 39.0
+    e_pair = 0.3 if calm else 0.8
     for b in BALLS:
         if t < b["t0"]:
             continue
@@ -278,6 +280,11 @@ def balls_step(t):
             b["vx"] *= (1.0 - 2.6 * sub / FPS_SIM)
             b["vy"] *= (1.0 - 1.6 * sub / FPS_SIM)
         b["vy"] += G / FPS_SIM
+        if calm:
+            f_calm = 1.0 - 1.5 / FPS_SIM
+            b["vx"] *= f_calm
+            b["vy"] *= f_calm
+        rest_eff = min(b["rest"], 0.45) if calm else b["rest"]
         if group:
             b["vx"] += (W / 2 - b["x"]) * 1.1 / FPS_SIM
         b["prevy"] = b["y"]
@@ -292,7 +299,7 @@ def balls_step(t):
         if b["y"] + R > FLOOR:
             imp = b["vy"]
             b["y"] = FLOOR - R
-            b["vy"] = -b["vy"] * b["rest"]
+            b["vy"] = -b["vy"] * rest_eff
             b["vx"] *= 0.93
             b["vr"] = b["vx"] / R
             if imp > 320:
@@ -302,12 +309,12 @@ def balls_step(t):
             b["x"] = WALL_L + 6 + R
             if b["vx"] < 0:
                 if abs(b["vx"]) > 350: boing_ev(t, abs(b["vx"]) / 2400.0 * 0.6)
-                b["vx"] = -b["vx"] * b["rest"]
+                b["vx"] = -b["vx"] * rest_eff
         if b["x"] + R > WALL_R - 6:
             b["x"] = WALL_R - 6 - R
             if b["vx"] > 0:
                 if abs(b["vx"]) > 350: boing_ev(t, abs(b["vx"]) / 2400.0 * 0.6)
-                b["vx"] = -b["vx"] * b["rest"]
+                b["vx"] = -b["vx"] * rest_eff
         if b["y"] - R < 60:
             b["y"] = 60 + R
             b["vy"] = abs(b["vy"]) * 0.25
@@ -339,7 +346,7 @@ def balls_step(t):
                 bj["y"] += nyn * ov * (ma / tot)
                 rvn = (bj["vx"] - ai["vx"]) * nxn + (bj["vy"] - ai["vy"]) * nyn
                 if rvn < 0:
-                    imp = -(1 + 0.8) * rvn / (1 / ma + 1 / mb)
+                    imp = -(1 + e_pair) * rvn / (1 / ma + 1 / mb)
                     ai["vx"] -= imp * nxn / ma
                     ai["vy"] -= imp * nyn / ma
                     bj["vx"] += imp * nxn / mb
@@ -350,7 +357,7 @@ def balls_step(t):
                     bj["sq"] = max(bj["sq"], min(0.4, abs(rvn) / 2600.0))
 
 def geyser(t, power):
-    deep = py > 1180
+    deep = py > FLOOR - 300
     vy[deep] -= power * (0.8 + np.random.random(deep.sum()) * 0.5)
     for b in BALLS:
         if b["y"] > surf[max(0, min(SURF_BINS - 1, int((b["x"] - WALL_L) / (WALL_R - WALL_L) * SURF_BINS)))] - b["R"]:

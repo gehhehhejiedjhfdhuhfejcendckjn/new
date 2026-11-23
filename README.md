@@ -6,14 +6,14 @@ A 2048×2048 MP4 animation created entirely with Python code, based on the story
 
 # 🫧 Funny Spheres — LiquidFun-Style Animation (NEW)
 
-A **45-second, ultra-tall vertical (720×1600)** MP4 of googly-eyed spheres playing in a physics-simulated liquid pool — splashes, geysers, a wrecking ball, a superball and a confetti finale.
+A **45-second, vertical 9:16 (720×1280)** MP4 of googly-eyed spheres playing in a physics-simulated liquid pool — splashes, geysers, a wrecking ball, a superball and a confetti finale.
 
 - **File:** `liquidfun_spheres_45s.mp4`
-- **Resolution:** 720×1600 (vertical 9:20)
+- **Resolution:** 720×1280 (vertical 9:16)
 - **Duration:** 45 seconds
 - **FPS:** 30 (simulated at 120 Hz)
 - **Format:** MP4 (H.264 + AAC stereo soundtrack)
-- **Size:** ~11.8 MB
+- **Size:** ~12.1 MB
 
 **Scenes:** 0:01 Chunky cannonballs in · 0:04 Lemon & Pistachio bounce · 0:08 Chubby Rain · 0:14 Bruiser the wrecking ball · 0:19 Bobby the floater · 0:25 Geyser O'Clock · 0:31 Superball Zoom · 0:37 Group Hug + confetti + THE END.
 
@@ -30,12 +30,12 @@ python3 liquidfun_render.py
 
 # 🪜 TOO MUCH TALL — the sequel (NEW)
 
-An even taller comedy cut: spheres sky-dive down a mega-tall slide (rails → pinball pegs → trampoline) into the pool below.
+The slide-tower sequel in the same 9:16 format: spheres sky-dive down a mega slide (rails → pinball pegs → trampoline) into the pool below.
 
 - **File:** `too_much_tall_spheres.mp4`
-- **Resolution:** 608×2560 (ultra-tall 1:4.2)
+- **Resolution:** 720×1280 (vertical 9:16)
 - **Duration:** 45 seconds · 30 fps
-- **Size:** ~10.1 MB
+- **Size:** ~11.1 MB
 
 **Scenes:** 0:02 Chunky sky-dives · 0:06 STEP 1: JUMP · 0:14 HEAVY CARGO · 0:18 Bobby regrets it · 0:22 EVERYBODY JUMPS!! · 0:27 SUPERBALL!! · 0:30 GEYSER O'CLOCK · 0:34 SPLASHDOWN · 0:38 trampoline group hug + confetti.
 
